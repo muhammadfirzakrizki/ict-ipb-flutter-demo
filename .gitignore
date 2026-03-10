@@ -43,3 +43,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android-only repository mode
+/ios/
+/linux/
+/macos/
+/web/
+/windows/
+
+# Ignore APK by default, but allow curated release artifact
+*.apk
+!/releases/
+!/releases/*.apk

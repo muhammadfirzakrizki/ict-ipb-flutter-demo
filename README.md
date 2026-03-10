@@ -1,6 +1,6 @@
-# ICT IPB Flutter Demo
+# ICT IPB Flutter Demo (Android Only)
 
-Mini project Flutter untuk submission posisi developer IPB ICT.
+Mini project Flutter untuk submission posisi developer IPB ICT dengan target upload khusus Android.
 
 ## Fitur Utama
 
@@ -51,16 +51,35 @@ flutter pub get
 flutterfire configure
 ```
 
-4. Jalankan aplikasi:
+4. Jalankan aplikasi Android:
 
 ```bash
 flutter run
 ```
 
+## Build APK Release
+
+```bash
+flutter build apk --release
+```
+
+APK release hasil build tersedia di:
+
+```text
+build/app/outputs/apk/release/app-release.apk
+```
+
+Untuk upload artifact ke GitHub, file APK juga disalin ke:
+
+```text
+releases/app-release.apk
+```
+
 ## Catatan
 
-- Pastikan Flutter SDK dan platform toolchain (Android/iOS/Web/Desktop) sudah terpasang.
+- Pastikan Flutter SDK dan Android toolchain sudah terpasang.
 - Data cuaca menggunakan endpoint publik Open-Meteo, sehingga tidak membutuhkan API key.
+- Folder platform non-Android (`ios`, `web`, `windows`, `macos`, `linux`) diabaikan lewat `.gitignore`.
 
 ## Git Remote
 
@@ -70,10 +89,10 @@ Remote `origin` sudah diarahkan ke:
 https://github.com/muhammadfirzakrizki/ict-ipb-flutter-demo.git
 ```
 
-## Langkah Push Pertama
+## Commit dan Push
 
 ```bash
 git add .
-git commit -m "Initial commit: ICT IPB Flutter demo"
+git commit -m "Configure Android-only repo and add release APK"
 git push -u origin main
 ```
