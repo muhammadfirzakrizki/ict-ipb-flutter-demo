@@ -5,7 +5,7 @@ Mini project Flutter untuk submission posisi developer IPB ICT dengan target upl
 ## Fitur Utama
 
 - Autentikasi pengguna dengan Firebase Auth (login, register, logout)
-- Manajemen state menggunakan BLoC + Hydrated BLoC
+- Manajemen state modern menggunakan Riverpod
 - Pengaturan tema (light/dark) yang tersimpan
 - Pengaturan bahasa aplikasi (lokalisasi)
 - Halaman profil dan pengaturan
@@ -15,19 +15,31 @@ Mini project Flutter untuk submission posisi developer IPB ICT dengan target upl
 
 - Flutter (Dart SDK `^3.11.1`)
 - Firebase Core + Firebase Auth
-- flutter_bloc + hydrated_bloc
+- flutter_riverpod + shared_preferences
 - HTTP client (`http`)
 
 ## Struktur Folder Inti
 
 ```text
 lib/
-  bloc/         # State management (auth, theme, language, weather)
-  pages/        # Halaman UI (login, register, home, profile, setting)
-  services/     # Integrasi Firebase Auth & weather API
-  models/       # Model data cuaca dan lokasi
-  theme/        # Konfigurasi tema aplikasi
-  l10n/         # Lokalisasi
+  core/         # Kode lintas fitur: widgets, theme, l10n, utils
+    router/     # GoRouter route constants dan router provider
+  features/     # Clean Architecture per fitur
+    auth/
+      application/  # Riverpod controller/provider
+      data/         # Repository implementation dan datasource Firebase
+      domain/       # Repository contract dan state
+      presentation/ # Pages dan widget UI auth
+    settings/
+      application/  # Riverpod controller/provider
+      data/         # Persistensi SharedPreferences
+      domain/       # Entity dan repository contract
+      presentation/ # Pages dan widget UI settings
+    weather/
+      application/  # Riverpod controller/provider
+      data/         # Repository implementation dan datasource Open-Meteo
+      domain/       # Entity, state, dan repository contract
+      presentation/ # Pages dan widget UI weather
 ```
 
 ## Setup Project
