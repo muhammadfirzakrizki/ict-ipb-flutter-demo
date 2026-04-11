@@ -19,6 +19,7 @@ class HomeView extends ConsumerStatefulWidget {
 
 class _HomeViewState extends ConsumerState<HomeView> {
   Timer? _debounce;
+  String _lastQuery = '';
 
   @override
   void dispose() {
@@ -27,10 +28,22 @@ class _HomeViewState extends ConsumerState<HomeView> {
   }
 
   void _onSearchChanged(String query) {
-    _debounce?.cancel();
-    if (query.length < 2) return;
+    if (query == _lastQuery) return;
+    final isDeleting = query.length < _lastQuery.length;
+    _lastQuery = query;
 
-    _debounce = Timer(const Duration(milliseconds: 600), () {
+    _debounce?.cancel();
+
+    if (query.trim().length < 2) {
+      ref.read(weatherControllerProvider.notifier).queryChanged(query);
+      return;
+    }
+
+    final debounceDuration = isDeleting
+        ? const Duration(milliseconds: 120)
+        : const Duration(milliseconds: 250);
+
+    _debounce = Timer(debounceDuration, () {
       ref.read(weatherControllerProvider.notifier).queryChanged(query);
     });
   }

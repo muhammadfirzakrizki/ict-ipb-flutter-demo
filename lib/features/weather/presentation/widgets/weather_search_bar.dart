@@ -41,7 +41,6 @@ class WeatherSearchBar extends StatelessWidget {
           child: Autocomplete<LocationOption>(
             displayStringForOption: (option) => option.label,
             optionsBuilder: (textEditingValue) {
-              onQueryChanged(textEditingValue.text);
               return textEditingValue.text.isEmpty
                   ? const Iterable<LocationOption>.empty()
                   : state.suggestions;
@@ -52,6 +51,7 @@ class WeatherSearchBar extends StatelessWidget {
                 controller: controller,
                 focusNode: focusNode,
                 style: const TextStyle(fontWeight: FontWeight.w600),
+                onChanged: onQueryChanged,
                 onTap: () {
                   if (!focusNode.hasFocus) {
                     focusNode.requestFocus();
@@ -76,7 +76,10 @@ class WeatherSearchBar extends StatelessWidget {
                   suffixIcon: controller.text.isNotEmpty
                       ? IconButton(
                           icon: const Icon(Icons.clear_rounded, size: 20),
-                          onPressed: controller.clear,
+                          onPressed: () {
+                            controller.clear();
+                            onQueryChanged('');
+                          },
                         )
                       : null,
                 ),
