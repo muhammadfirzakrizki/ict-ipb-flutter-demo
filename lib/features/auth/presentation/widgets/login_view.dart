@@ -67,14 +67,7 @@ class _LoginViewState extends ConsumerState<LoginView>
     final colorScheme = theme.colorScheme;
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState is AuthLoading;
-
-    ref.listen<AuthState>(authControllerProvider, (previous, next) {
-      if (next is AuthAuthenticated) {
-        context.go(AppRoutes.home);
-      } else if (next is AuthError) {
-        _showErrorSnackBar(context, context.tr(next.message));
-      }
-    });
+    final errorText = authState is AuthError ? context.tr(authState.message) : null;
 
     return Scaffold(
       // Menggunakan Stack untuk layer background dan konten
@@ -110,7 +103,7 @@ class _LoginViewState extends ConsumerState<LoginView>
                               const SizedBox(height: 40),
 
                               // --- LOGIN CARD ---
-                              _buildLoginCard(colorScheme, authState),
+                              _buildLoginCard(colorScheme, authState, errorText),
 
                               const SizedBox(height: 32),
 
@@ -130,7 +123,11 @@ class _LoginViewState extends ConsumerState<LoginView>
     );
   }
 
-  Widget _buildLoginCard(ColorScheme colorScheme, AuthState state) {
+  Widget _buildLoginCard(
+    ColorScheme colorScheme,
+    AuthState state,
+    String? errorText,
+  ) {
     bool isLoading = state is AuthLoading;
 
     return FadeSlideIn(
@@ -172,6 +169,20 @@ class _LoginViewState extends ConsumerState<LoginView>
               focusedBorderColor: Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(height: 32),
+            if (errorText != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    errorText,
+                    style: TextStyle(
+                      color: colorScheme.error,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
 
             // Tombol Masuk dengan Animasi Loading
             SizedBox(
@@ -240,17 +251,6 @@ class _LoginViewState extends ConsumerState<LoginView>
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showErrorSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.redAccent,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

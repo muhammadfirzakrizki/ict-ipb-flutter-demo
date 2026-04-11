@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localization.dart';
-import '../../../../core/router/app_routes.dart';
 import '../../../../core/widgets/core_widgets.dart';
 import '../../application/auth_controller.dart';
 import '../../domain/auth_state.dart';
@@ -90,14 +89,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     final colorScheme = theme.colorScheme;
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState is AuthLoading;
-
-    ref.listen<AuthState>(authControllerProvider, (previous, next) {
-      if (next is AuthAuthenticated) {
-        context.go(AppRoutes.home);
-      } else if (next is AuthError) {
-        _showSnackBar(context.tr(next.message));
-      }
-    });
+    final errorText = authState is AuthError ? context.tr(authState.message) : null;
 
     return Scaffold(
       // AppBar dibuat transparan agar menyatu dengan background vintage
@@ -214,6 +206,19 @@ class _RegisterViewState extends ConsumerState<RegisterView>
                                 child: Text(context.tr('create_account')),
                               ),
                             ),
+                            if (errorText != null) ...[
+                              const SizedBox(height: 16),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  errorText,
+                                  style: TextStyle(
+                                    color: colorScheme.error,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
 
                             const SizedBox(height: 20),
                             TextButton(

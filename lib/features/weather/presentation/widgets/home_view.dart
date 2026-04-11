@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localization.dart';
-import '../../../../core/router/app_routes.dart';
 import '../../../../core/widgets/core_widgets.dart';
-import '../../../auth/application/auth_controller.dart';
-import '../../../auth/domain/auth_state.dart';
 import '../../application/weather_controller.dart';
 import 'dashboard_header.dart';
 import 'dashboard_menu.dart';
@@ -32,7 +28,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   void _onSearchChanged(String query) {
     _debounce?.cancel();
-    if (query.length < 3) return;
+    if (query.length < 2) return;
 
     _debounce = Timer(const Duration(milliseconds: 600), () {
       ref.read(weatherControllerProvider.notifier).queryChanged(query);
@@ -44,12 +40,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final weatherState = ref.watch(weatherControllerProvider);
-
-    ref.listen<AuthState>(authControllerProvider, (previous, next) {
-      if (next is AuthUnauthenticated) {
-        context.go(AppRoutes.login);
-      }
-    });
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -70,23 +60,16 @@ class _HomeViewState extends ConsumerState<HomeView> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            // Agar area klik stabil, kita hilangkan Transform.translate
             child: Column(
               children: [
-                // Menggunakan Stack untuk Header dan SearchBar
                 Stack(
-                  clipBehavior: Clip
-                      .none, // Agar SearchBar yang meluncur ke bawah tidak terpotong
+                  clipBehavior: Clip.none,
                   children: [
-                    // 1. Header Blue Gradient
                     DashboardHeader(colorScheme: colorScheme),
-
-                    // 2. SearchBar diposisikan menempel di bawah header
                     Positioned(
                       left: 20,
                       right: 20,
-                      bottom:
-                          -25, // Membuatnya "mengambang" di antara header dan body
+                      bottom: -25,
                       child: WeatherSearchBar(
                         state: weatherState,
                         colorScheme: colorScheme,
@@ -98,11 +81,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     ),
                   ],
                 ),
-
-                // 3. Memberi jarak (SizedBox) karena SearchBar ditaruh di Positioned
                 const SizedBox(height: 50),
-
-                // 4. Bagian Weather Card
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: AnimatedSwitcher(
@@ -144,5 +123,4 @@ class _HomeViewState extends ConsumerState<HomeView> {
       ),
     );
   }
-
 }

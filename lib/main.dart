@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/l10n/app_localization.dart';
@@ -10,6 +11,9 @@ import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'firebase_options.dart';
 import 'features/settings/application/settings_controller.dart';
+
+late final ProviderContainer appContainer;
+late final AppRouter appRouter;
 
 void main() async {
   // 1. Inisialisasi binding dan simpan dalam variabel
@@ -22,24 +26,27 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   final sharedPreferences = await SharedPreferences.getInstance();
+  appContainer = ProviderContainer(
+    overrides: [sharedPreferencesProvider.overrideWithValue(sharedPreferences)],
+  );
+  appRouter = AppRouter.initialize(appContainer);
 
   runApp(
-    ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(sharedPreferences),
-      ],
-      child: const MyApp(),
+    UncontrolledProviderScope(
+      container: appContainer,
+      child: MyApp(router: appRouter.router),
     ),
   );
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.router});
+
+  final GoRouter router;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsControllerProvider);
-    final router = ref.watch(appRouterProvider);
 
     FlutterNativeSplash.remove();
 
