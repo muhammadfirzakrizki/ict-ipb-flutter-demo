@@ -59,9 +59,29 @@ flutter pub get
 
 3. Konfigurasi Firebase (jika ingin pakai project Firebase sendiri):
 
+### ✅ Cara Gampang (Otomatis)
+Jika sudah menginstall Firebase CLI dan FlutterFire CLI, jalankan perintah berikut:
+
 ```bash
 flutterfire configure
 ```
+
+Perintah ini akan otomatis membuat file `lib/firebase_options.dart` sesuai dengan project Firebase kamu.
+
+---
+
+### 🛠️ Cara Manual
+1. Salin file berikut:
+   ```bash
+   lib/firebase_options.dart.example
+   ```
+2. Ubah nama file menjadi:
+   ```bash
+   lib/firebase_options.dart
+   ```
+3. Isi kredensial Firebase sesuai dengan project kamu (bisa didapat dari Firebase Console).
+
+---
 
 4. Jalankan aplikasi Android:
 
